@@ -1,61 +1,39 @@
-# Automated OTP Website
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free OTP Sender</title>
+    <link rel="stylesheet" href="styles.css">
+    <src="otpprovider.js></src>
+        
 
-This project is a fully automated OTP system that generates and sends a 6-digit OTP to a given phone number. The OTP expires in 5 minutes, and the website includes a resend delay to prevent abuse.
+        function generateOTP() {
+            let phoneInput = document.getElementById("phone");
+            let otpInput = document.getElementById("otp");
+            let phoneNumber = phoneInput.value || "+919876543210"; // Default or user-input number
+            let otp = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
+            otpInput.value = otp;
+            
+            fetch("/send-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone: phoneNumber, otp: otp })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message));
+        }
+    </script>
+    <p id="countdown"></p>
 
-## 🚀 Features
-- Auto-generates a 6-digit OTP
-- Sends OTP to the requested phone number
-- OTP expires in 5 minutes
-- Resend OTP button with a 30-second cooldown
-- Beautiful and responsive UI
-- Fully automated with no manual intervention required
-
-## 🛠️ Tech Stack
-- **Frontend:** HTML, CSS, JavaScript
-- **Backend:** Python (Flask)
-- **Database:** JSON or SQLite (optional)
-- **SMS Gateway:** Uses your phone number for sending OTPs
-
-## 📌 Setup Instructions
-### 1️⃣ Clone the Repository
-```sh
-git clone https://github.com/your-username/otp-website.git
-cd otp-website
-```
-
-### 2️⃣ Install Dependencies
-```sh
-pip install flask flask-cors
-```
-
-### 3️⃣ Run the Backend Server
-```sh
-python app.py
-```
-
-### 4️⃣ Open `index.html` in a Browser
-You can use `Live Server` (VS Code Extension) or simply open the file.
-
-## 🌍 Deploying Online
-### **Frontend Hosting Options**
-- **GitHub Pages:** Free & easy
-- **Vercel:** Best for frontend + backend APIs
-- **Netlify:** Drag & drop hosting
-
-### **Backend Hosting Options**
-- **Railway.app:** Free hosting for Flask servers
-- **Render.com:** Free backend hosting with auto-deployment
-- **VPS (Optional):** For full control
-
-## 🔗 Make Website Appear on Google
-1. Deploy your website.
-2. Submit the link to **[Google Search Console](https://search.google.com/search-console/)**.
-3. Add SEO-friendly meta tags in `index.html`.
-4. Share the link on social media for faster indexing.
-
-## 🤝 Contributing
-Want to improve the project? Feel free to fork the repository and submit a pull request!
-
-## 📧 Contact
-For any questions, contact: **omeglermps@gmail.com**
+</head>
+<body>
+    <div class="container">
+        <h2>Free OTP Sender</h2>
+        <input type="text" id="phone" placeholder="Enter phone number">
+        <input type="text" id="otp" placeholder="Generated OTP" readonly>
+        <button onclick="generateOTP()">Send OTP</button>
+    </div>
+</body>
+</html>
 
