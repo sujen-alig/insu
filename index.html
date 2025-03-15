@@ -1,22 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Free OTP Sender</title>
-    <link rel="stylesheet" href="styles.css">
-    <src="otpprovider.js></src>
-        
-    </script>
-    <p id="countdown"></p>
+<input type="text" id="phone" placeholder="Enter phone number">
+<button id="sendOtp">Send OTP</button>
+<p id="response"></p>
 
-</head>
-<body>
-    <div class="container">
-        <h2>Free OTP Sender</h2>
-        <input type="text" id="phone" placeholder="Enter phone number">
-        <input type="text" id="otp" placeholder="Generated OTP" readonly>
-        <button onclick="generateOTP()">Send OTP</button>
-    </div>
-</body>
-</html>
+<script>
+    document.getElementById("sendOtp").addEventListener("click", function () {
+        const phone = document.getElementById("phone").value;
+        const backendUrl = "https://your-backend-url.com"; // Replace with your actual Flask backend URL
+        
+        fetch(`${backendUrl}/send-otp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ phone: phone })
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("response").innerText = data.message || data.error;
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById("response").innerText = "Error sending OTP";
+        });
+    });
+</script>
