@@ -57,5 +57,5 @@ You can use `Live Server` (VS Code Extension) or simply open the file.
 Want to improve the project? Feel free to fork the repository and submit a pull request!
 
 ## 📧 Contact
-For any questions, contact: **your-email@example.com**
+For any questions, contact: **omeglermps@gmail.com**
 
