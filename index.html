@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betting Record Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        @media (max-width: 640px) {
+            .table-container {
+                max-height: 300px;
+            }
+        }
+        #githubModal {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+    <!-- GitHub Configuration Modal -->
+    <div id="githubModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">GitHub Configuration</h2>
+            <div class="grid grid-cols-1 gap-4">
+                <div>
+                    <label for="githubToken" class="block text-sm font-medium text-gray-700">GitHub Personal Access Token</label>
+                    <input type="password" id="githubToken" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter GitHub PAT">
+                </div>
+                <div>
+                    <label for="repoOwner" class="block text-sm font-medium text-gray-700">Repository Owner</label>
+                    <input type="text" id="repoOwner" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., your-username">
+                </div>
+                <div>
+                    <label for="repoName" class="block text-sm font-medium text-gray-700">Repository Name</label>
+                    <input type="text" id="repoName" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="e.g., betting-tracker">
+                </div>
+                <div>
+                    <button onclick="saveGitHubConfig()" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition duration-200">Save Configuration</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-4 max-w-4xl">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Betting Record Tracker</h1>
+        
+        <!-- Form to add new transaction -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Add Transaction</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
+                    <select id="type" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="Deposit">Deposit</option>
+                        <option value="Withdraw">Withdraw</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="amount" class="block text-sm font-medium text-gray-700">Amount (₹)</label>
+                    <input type="number" id="amount" step="0.01" min="0" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter amount">
+                </div>
+                <div class="sm:col-span-2">
+                    <label for="description" class="block text-sm font-medium text-gray-700">Description (Optional)</label>
+                    <input type="text" id="description" class="mt-1 block w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter description">
+                </div>
+                <div class="sm:col-span-2">
+                    <button onclick="addTransaction()" class="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition duration-200">Add Transaction</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Summary</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="text-center">
+                    <p class="text-sm font-medium text-gray-600">Total Deposits</p>
+                    <p id="totalDeposits" class="text-lg font-bold text-red-600">₹0.00</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm font-medium text-gray-600">Total Withdrawals</p>
+                    <p id="totalWithdrawals" class="text-lg font-bold text-green-600">₹0.00</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm font-medium text-gray-600">Total Profit</p>
+                    <p id="totalProfit" class="text-lg font-bold text-green-600">₹0.00</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm font-medium text-gray-600">Total Loss</p>
+                    <p id="totalLoss" class="text-lg font-bold text-red-600">₹0.00</p>
+                </div>
+                <div class="text-center">
+                    <p class="text-sm font-medium text-gray-600">Balance (Net Profit/Loss)</p>
+                    <p id="balance" class="text-lg font-bold text-gray-800">₹0.00</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graph Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Net Balance Over Time</h2>
+            <canvas id="profitLossChart" class="w-full h-64"></canvas>
+        </div>
+
+        <!-- Transactions Table -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-700">Transaction History</h2>
+                <button onclick="clearSelected()" class="bg-red-600 text-white p-2 rounded-md hover:bg-red-700 transition duration-200">Clear Selected</button>
+            </div>
+            <div class="table-container">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                                <input type="checkbox" id="selectAll" onclick="toggleSelectAll()">
+                            </th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Date</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Type</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Amount</th>
+                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionTable" class="bg-white divide-y divide-gray-200">
+                        <!-- Transactions will be added here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize transactions from localStorage
+        let transactions = JSON.parse(localStorage.getItem('bettingTransactions')) || [];
+        let chart = null;
+
+        // Function to save transactions to localStorage
+        function saveTransactions() {
+            localStorage.setItem('bettingTransactions', JSON.stringify(transactions));
+        }
+
+        // Function to save GitHub configuration
+        function saveGitHubConfig() {
+            const token = document.getElementById('githubToken').value;
+            const owner = document.getElementById('repoOwner').value;
+            const repo = document.getElementById('repoName').value;
+
+            if (!token || !owner || !repo) {
+                alert('Please fill in all GitHub configuration fields');
+                return;
+            }
+
+            localStorage.setItem('githubToken', token);
+            localStorage.setItem('repoOwner', owner);
+            localStorage.setItem('repoName', repo);
+            document.getElementById('githubModal').style.display = 'none';
+            loadFromGitHub(); // Load data after saving config
+        }
+
+        // Function to check if GitHub config is needed
+        function checkGitHubConfig() {
+            const token = localStorage.getItem('githubToken');
+            const owner = localStorage.getItem('repoOwner');
+            const repo = localStorage.getItem('repoName');
+            if (!token || !owner || !repo) {
+                document.getElementById('githubModal').style.display = 'flex';
+            } else {
+                loadFromGitHub(); // Automatically load on page load
+            }
+        }
+
+        // Function to add a new transaction
+        async function addTransaction() {
+            const type = document.getElementById('type').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const description = document.getElementById('description').value;
+            const date = new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
+
+            if (isNaN(amount) || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            transactions.push({ date, type, amount, description, selected: false });
+            saveTransactions();
+            await saveToGitHub();
+            updateUI();
+            
+            // Clear form
+            document.getElementById('amount').value = '';
+            document.getElementById('description').value = '';
+        }
+
+        // Function to toggle select all checkboxes
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll').checked;
+            transactions.forEach(t => t.selected = selectAll);
+            updateUI();
+        }
+
+        // Function to clear selected transactions
+        async function clearSelected() {
+            if (!transactions.some(t => t.selected)) {
+                alert('No transactions selected');
+                return;
+            }
+            if (confirm('Are you sure you want to delete the selected transactions?')) {
+                transactions = transactions.filter(t => !t.selected);
+                saveTransactions();
+                await saveToGitHub();
+                updateUI();
+            }
+        }
+
+        // Function to update the UI
+        function updateUI() {
+            const tableBody = document.getElementById('transactionTable');
+            tableBody.innerHTML = '';
+
+            let totalDeposits = 0;
+            let totalWithdrawals = 0;
+
+            // Group transactions by date
+            const groupedByDate = transactions.reduce((acc, transaction) => {
+                const date = transaction.date.split(',')[0];
+                if (!acc[date]) acc[date] = [];
+                acc[date].push(transaction);
+                return acc;
+            }, {});
+
+            // Sort dates in ascending order
+            const sortedDates = Object.keys(groupedByDate).sort((a, b) => new Date(a) - new Date(b));
+
+            sortedDates.forEach(date => {
+                groupedByDate[date].forEach((transaction, index) => {
+                    if (transaction.type === 'Deposit') totalDeposits += transaction.amount;
+                    if (transaction.type === 'Withdraw') totalWithdrawals += transaction.amount;
+
+                    const row = document.createElement('tr');
+                    row.className = 'text-sm';
+                    row.innerHTML = `
+                        <td class="px-4 py-2 whitespace-nowrap">
+                            <input type="checkbox" ${transaction.selected ? 'checked' : ''} onclick="transactions.find(t => t.date === '${transaction.date}' && t.type === '${transaction.type}' && t.amount === ${transaction.amount}).selected = this.checked; updateUI()">
+                        </td>
+                        <td class="px-4 py-2 whitespace-nowrap">${transaction.date}</td>
+                        <td class="px-4 py-2 whitespace-nowrap ${transaction.type === 'Deposit' ? 'text-red-600' : 'text-green-600'}">${transaction.type}</td>
+                        <td class="px-4 py-2 whitespace-nowrap">₹${transaction.amount.toFixed(2)}</td>
+                        <td class="px-4 py-2">${transaction.description || '-'}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            });
+
+            // Calculate net profit/loss and total profit/loss
+            const netProfitLoss = totalWithdrawals - totalDeposits;
+            const totalProfit = totalWithdrawals > totalDeposits ? totalWithdrawals - totalDeposits : 0;
+            const totalLoss = totalDeposits > totalWithdrawals ? totalDeposits - totalWithdrawals : 0;
+
+            document.getElementById('totalDeposits').textContent = `₹${totalDeposits.toFixed(2)}`;
+            document.getElementById('totalWithdrawals').textContent = `₹${totalWithdrawals.toFixed(2)}`;
+            document.getElementById('totalProfit').textContent = `₹${totalProfit.toFixed(2)}`;
+            document.getElementById('totalLoss').textContent = `₹${totalLoss.toFixed(2)}`;
+            document.getElementById('balance').textContent = `₹${netProfitLoss.toFixed(2)}`;
+            document.getElementById('balance').className = `text-lg font-bold ${netProfitLoss >= 0 ? 'text-green-600' : 'text-red-600'}`;
+            document.getElementById('selectAll').checked = transactions.every(t => t.selected);
+
+            updateChart();
+        }
+
+        // Function to update the bar chart
+        function updateChart() {
+            const ctx = document.getElementById('profitLossChart').getContext('2d');
+            const dates = [];
+            const netValues = [];
+
+            let runningBalance = 0;
+            const uniqueDates = [...new Set(transactions.map(t => t.date.split(',')[0]))].sort((a, b) => new Date(a) - new Date(b));
+
+            uniqueDates.forEach(date => {
+                let dailyDeposit = 0;
+                let dailyWithdraw = 0;
+
+                transactions
+                    .filter(t => t.date.split(',')[0] === date)
+                    .forEach(t => {
+                        if (t.type === 'Deposit') dailyDeposit += t.amount;
+                        if (t.type === 'Withdraw') dailyWithdraw += t.amount;
+                    });
+
+                runningBalance += dailyWithdraw - dailyDeposit;
+                dates.push(date);
+                netValues.push(runningBalance);
+            });
+
+            if (chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dates.length ? dates : ['No Data'],
+                    datasets: [{
+                        label: 'Net Balance',
+                        data: netValues.length ? netValues : [0],
+                        backgroundColor: netValues.map(value => value >= 0 ? 'rgba(34, 197, 94, 0.6)' : 'rgba(239, 68, 68, 0.6)'),
+                        borderColor: netValues.map(value => value >= 0 ? 'rgba(34, 197, 94, 1)' : 'rgba(239, 68, 68, 1)'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Balance (₹)' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Date' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to save transactions to GitHub
+        async function saveToGitHub() {
+            const token = localStorage.getItem('githubToken');
+            const owner = localStorage.getItem('repoOwner');
+            const repo = localStorage.getItem('repoName');
+
+            if (!token || !owner || !repo) {
+                document.getElementById('githubModal').style.display = 'flex';
+                return;
+            }
+
+            try {
+                // Get the current file content to update it
+                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/transactions.json`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                let sha;
+                if (response.ok) {
+                    const fileData = await response.json();
+                    sha = fileData.sha;
+                }
+
+                // Prepare the new file content
+                const content = JSON.stringify(transactions);
+                const contentBase64 = btoa(unescape(encodeURIComponent(content)));
+
+                // Commit the updated file
+                const commitResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/transactions.json`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: `Update transactions.json at ${new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })}`,
+                        content: contentBase64,
+                        sha: sha
+                    })
+                });
+
+                if (!commitResponse.ok) {
+                    const errorData = await commitResponse.json();
+                    console.error(`Failed to save to GitHub: ${errorData.message}`);
+                }
+            } catch (error) {
+                console.error(`Error saving to GitHub: ${error.message}`);
+            }
+        }
+
+        // Function to load transactions from GitHub
+        async function loadFromGitHub() {
+            const token = localStorage.getItem('githubToken');
+            const owner = localStorage.getItem('repoOwner');
+            const repo = localStorage.getItem('repoName');
+
+            if (!token || !owner || !repo) {
+                document.getElementById('githubModal').style.display = 'flex';
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/transactions.json`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (response.ok) {
+                    const fileData = await response.json();
+                    const content = atob(fileData.content);
+                    transactions = JSON.parse(content);
+                    saveTransactions();
+                    updateUI();
+                } else {
+                    const errorData = await response.json();
+                    console.error(`Failed to load from GitHub: ${errorData.message}`);
+                }
+            } catch (error) {
+                console.error(`Error loading from GitHub: ${error.message}`);
+            }
+        }
+
+        // Check GitHub config and load data on page load
+        checkGitHubConfig();
+
+        // Initial UI update
+        updateUI();
+    </script>
+</body>
+</html>
