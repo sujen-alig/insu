@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModAPK Pro Platform - Your Ultimate Destination for Premium Modified Apps</title>
+    <meta name="description" content="Download the latest premium mod APKs with advanced features. Secure downloads, comprehensive reviews, and professional platform.">
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#218095">
+    <link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTW9kQVBLIFBybyBQbGF0Zm9ybSIsInNob3J0X25hbWUiOiJNb2RBUEsifQ==">
+    
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo" onclick="app.navigateTo('home')">
+                    <i class="fas fa-cube"></i>
+                    <h1>ModAPK Pro</h1>
+                </div>
+                
+                <nav class="main-nav">
+                    <a href="#" onclick="app.navigateTo('home')" class="nav-link active" data-page="home">
+                        <i class="fas fa-home"></i>Home
+                    </a>
+                    <a href="#" onclick="app.navigateTo('browse')" class="nav-link" data-page="browse">
+                        <i class="fas fa-th-large"></i>Browse
+                    </a>
+                    <a href="#" onclick="app.navigateTo('upload')" class="nav-link" data-page="upload">
+                        <i class="fas fa-upload"></i>Upload
+                    </a>
+                    <a href="#" onclick="app.navigateTo('about')" class="nav-link" data-page="about">
+                        <i class="fas fa-info-circle"></i>About
+                    </a>
+                    <a href="#" onclick="app.navigateTo('contact')" class="nav-link" data-page="contact">
+                        <i class="fas fa-envelope"></i>Contact
+                    </a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button id="searchToggle" class="btn btn--outline btn--sm">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button id="themeToggle" class="btn btn--outline btn--sm">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="user-menu">
+                        <button id="userBtn" class="btn btn--secondary btn--sm">
+                            <i class="fas fa-user"></i>Account
+                        </button>
+                    </div>
+                    <button id="adminBtn" class="btn btn--primary btn--sm">
+                        <i class="fas fa-shield-alt"></i>Admin
+                    </button>
+                    <button id="mobileMenuToggle" class="btn btn--outline btn--sm mobile-only">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Search Overlay -->
+            <div id="searchOverlay" class="search-overlay hidden">
+                <div class="search-container">
+                    <div class="search-bar-advanced">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="globalSearch" placeholder="Search APKs, categories, or keywords..." class="form-control">
+                        <button id="voiceSearch" class="btn btn--outline btn--sm">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                    </div>
+                    <div class="search-suggestions" id="searchSuggestions"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation -->
+    <div id="mobileNav" class="mobile-nav hidden">
+        <div class="mobile-nav-content">
+            <a href="#" onclick="app.navigateTo('home')" class="mobile-nav-link">
+                <i class="fas fa-home"></i>Home
+            </a>
+            <a href="#" onclick="app.navigateTo('browse')" class="mobile-nav-link">
+                <i class="fas fa-th-large"></i>Browse
+            </a>
+            <a href="#" onclick="app.navigateTo('upload')" class="mobile-nav-link">
+                <i class="fas fa-upload"></i>Upload
+            </a>
+            <a href="#" onclick="app.navigateTo('about')" class="mobile-nav-link">
+                <i class="fas fa-info-circle"></i>About
+            </a>
+            <a href="#" onclick="app.navigateTo('contact')" class="mobile-nav-link">
+                <i class="fas fa-envelope"></i>Contact
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Homepage -->
+        <section id="homePage" class="page active">
+            <div class="hero-section">
+                <div class="container">
+                    <div class="hero-content">
+                        <h1 class="hero-title">Your Ultimate Destination for Premium Modified Apps</h1>
+                        <p class="hero-subtitle">Discover, download, and enjoy the best modified Android applications with enhanced features and premium unlocks.</p>
+                        <div class="hero-actions">
+                            <button onclick="app.navigateTo('browse')" class="btn btn--primary btn--lg">
+                                <i class="fas fa-download"></i>Browse APKs
+                            </button>
+                            <button onclick="app.navigateTo('upload')" class="btn btn--outline btn--lg">
+                                <i class="fas fa-upload"></i>Upload APK
+                            </button>
+                        </div>
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <span class="stat-number" id="heroTotalApks">0</span>
+                                <span class="stat-label">Total APKs</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="heroTotalDownloads">0</span>
+                                <span class="stat-label">Downloads</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number" id="heroActiveUsers">15.6K</span>
+                                <span class="stat-label">Active Users</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ad Banner -->
+            <div class="ad-banner">
+                <div class="container">
+                    <div class="ad-space ad-space--banner">
+                        <div class="ad-placeholder">
+                            <i class="fas fa-ad"></i>
+                            <span>Premium Advertisement Space - 970x250</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Categories -->
+            <section class="categories-section">
+                <div class="container">
+                    <h2>Popular Categories</h2>
+                    <div class="categories-grid" id="categoriesGrid"></div>
+                </div>
+            </section>
+
+            <!-- Featured APKs -->
+            <section class="featured-section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Featured APKs</h2>
+                        <button onclick="app.navigateTo('browse')" class="btn btn--outline">View All</button>
+                    </div>
+                    <div class="featured-grid" id="featuredGrid"></div>
+                </div>
+            </section>
+
+            <!-- Trending APKs -->
+            <section class="trending-section">
+                <div class="container">
+                    <h2>Trending This Week</h2>
+                    <div class="trending-grid" id="trendingGrid"></div>
+                </div>
+            </section>
+        </section>
+
+        <!-- Browse Page -->
+        <section id="browsePage" class="page">
+            <div class="container">
+                <div class="browse-header">
+                    <h1>Browse APKs</h1>
+                    <div class="browse-controls">
+                        <div class="filters">
+                            <select id="categoryFilter" class="form-control">
+                                <option value="">All Categories</option>
+                            </select>
+                            <select id="sortBy" class="form-control">
+                                <option value="name">Name A-Z</option>
+                                <option value="date">Newest First</option>
+                                <option value="downloads">Most Downloaded</option>
+                                <option value="rating">Highest Rated</option>
+                            </select>
+                            <button id="viewToggle" class="btn btn--outline">
+                                <i class="fas fa-th-large"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="browse-layout">
+                    <aside class="browse-sidebar">
+                        <div class="sidebar-section">
+                            <h3>Quick Filters</h3>
+                            <div class="filter-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="verifiedOnly">
+                                    <span class="checkmark"></span>
+                                    Verified Only
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="recentOnly">
+                                    <span class="checkmark"></span>
+                                    Recent Updates
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="featuredOnly">
+                                    <span class="checkmark"></span>
+                                    Featured
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar Ad -->
+                        <div class="ad-space ad-space--sidebar">
+                            <div class="ad-placeholder">
+                                <i class="fas fa-ad"></i>
+                                <span>Advertisement - 300x600</span>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <div class="browse-content">
+                        <div class="browse-results">
+                            <div class="results-info">
+                                <span id="resultsCount">0 results found</span>
+                            </div>
+                            <div class="apk-grid" id="browseGrid"></div>
+                            <div class="pagination" id="pagination"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Upload Page -->
+        <section id="uploadPage" class="page">
+            <div class="container">
+                <div class="upload-header">
+                    <h1>Upload APK</h1>
+                    <p>Share your modified APKs with the community. Please ensure all uploads comply with our guidelines.</p>
+                </div>
+
+                <div class="upload-layout">
+                    <div class="upload-main">
+                        <div class="upload-card">
+                            <div class="upload-zone" id="uploadZone">
+                                <div class="upload-placeholder">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <h3>Drag & Drop APK Files</h3>
+                                    <p>Or click to browse from your device</p>
+                                    <button type="button" class="btn btn--primary">Choose Files</button>
+                                </div>
+                            </div>
+                            
+                            <form id="uploadForm" class="upload-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">App Name *</label>
+                                        <input type="text" id="uploadAppName" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Version *</label>
+                                        <input type="text" id="uploadAppVersion" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Category *</label>
+                                        <select id="uploadCategory" class="form-control" required>
+                                            <option value="">Select Category</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">File Size</label>
+                                        <input type="text" id="uploadFileSize" class="form-control" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Description *</label>
+                                    <textarea id="uploadDescription" class="form-control" rows="4" placeholder="Describe the app features, modifications, and any special instructions..." required></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Screenshots (URLs)</label>
+                                    <div class="screenshot-inputs">
+                                        <input type="url" id="screenshot1" class="form-control" placeholder="Screenshot 1 URL">
+                                        <input type="url" id="screenshot2" class="form-control" placeholder="Screenshot 2 URL">
+                                        <input type="url" id="screenshot3" class="form-control" placeholder="Screenshot 3 URL">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Tags</label>
+                                    <input type="text" id="uploadTags" class="form-control" placeholder="mod, premium, unlocked, pro">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="uploadTerms" required>
+                                        <span class="checkmark"></span>
+                                        I agree to the terms and conditions and confirm this APK is safe
+                                    </label>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn--primary btn--lg">
+                                        <i class="fas fa-upload"></i>Submit for Review
+                                    </button>
+                                    <button type="reset" class="btn btn--outline">
+                                        <i class="fas fa-times"></i>Clear Form
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <aside class="upload-sidebar">
+                        <div class="info-card">
+                            <h3><i class="fas fa-info-circle"></i> Upload Guidelines</h3>
+                            <ul>
+                                <li>Only upload APKs you have rights to distribute</li>
+                                <li>Ensure APKs are virus-free and safe</li>
+                                <li>Provide accurate descriptions and screenshots</li>
+                                <li>Files will be reviewed before publication</li>
+                            </ul>
+                        </div>
+
+                        <div class="info-card">
+                            <h3><i class="fas fa-shield-alt"></i> Security Scan</h3>
+                            <p>All uploaded files undergo automatic security scanning for malware and suspicious code.</p>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Page -->
+        <section id="aboutPage" class="page">
+            <div class="container">
+                <div class="about-content">
+                    <h1>About ModAPK Pro Platform</h1>
+                    
+                    <div class="about-section">
+                        <h2>Our Mission</h2>
+                        <p>ModAPK Pro Platform is dedicated to providing a secure, reliable, and comprehensive platform for modified Android applications. We strive to create a community where developers and users can safely share and discover premium app modifications.</p>
+                    </div>
+
+                    <div class="features-showcase">
+                        <h2>Platform Features</h2>
+                        <div class="features-grid">
+                            <div class="feature-card">
+                                <i class="fas fa-shield-check"></i>
+                                <h3>Security First</h3>
+                                <p>Advanced malware scanning and verification for all uploaded APKs</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-download"></i>
+                                <h3>Fast Downloads</h3>
+                                <p>Multiple download mirrors and optimized delivery network</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-users"></i>
+                                <h3>Community Driven</h3>
+                                <p>User reviews, ratings, and community feedback system</p>
+                            </div>
+                            <div class="feature-card">
+                                <i class="fas fa-mobile-alt"></i>
+                                <h3>Mobile Optimized</h3>
+                                <p>Fully responsive design for all devices and screen sizes</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-showcase">
+                        <h2>Platform Statistics</h2>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <i class="fas fa-download"></i>
+                                <span class="stat-number" id="aboutTotalApks">0</span>
+                                <span class="stat-label">Total APKs</span>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-eye"></i>
+                                <span class="stat-number" id="aboutTotalDownloads">0</span>
+                                <span class="stat-label">Total Downloads</span>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-users"></i>
+                                <span class="stat-number">25.3K</span>
+                                <span class="stat-label">Active Users</span>
+                            </div>
+                            <div class="stat-card">
+                                <i class="fas fa-star"></i>
+                                <span class="stat-number">4.8</span>
+                                <span class="stat-label">Average Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Page -->
+        <section id="contactPage" class="page">
+            <div class="container">
+                <div class="contact-header">
+                    <h1>Contact Us</h1>
+                    <p>Get in touch with our team for support, partnerships, or general inquiries.</p>
+                </div>
+
+                <div class="contact-layout">
+                    <div class="contact-main">
+                        <div class="contact-form-card">
+                            <h2>Send us a Message</h2>
+                            <form id="contactForm" class="contact-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label">Name *</label>
+                                        <input type="text" id="contactName" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Email *</label>
+                                        <input type="email" id="contactEmail" class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Subject *</label>
+                                    <select id="contactSubject" class="form-control" required>
+                                        <option value="">Select Subject</option>
+                                        <option value="general">General Inquiry</option>
+                                        <option value="support">Technical Support</option>
+                                        <option value="dmca">DMCA Takedown</option>
+                                        <option value="partnership">Partnership</option>
+                                        <option value="report">Report Issue</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Message *</label>
+                                    <textarea id="contactMessage" class="form-control" rows="6" required></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn--primary btn--lg">
+                                    <i class="fas fa-paper-plane"></i>Send Message
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <aside class="contact-sidebar">
+                        <div class="contact-info-card">
+                            <h3>Contact Information</h3>
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div>
+                                    <strong>General Support</strong>
+                                    <span>support@modapkpro.com</span>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-shield-alt"></i>
+                                <div>
+                                    <strong>DMCA Requests</strong>
+                                    <span>dmca@modapkpro.com</span>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-handshake"></i>
+                                <div>
+                                    <strong>Partnerships</strong>
+                                    <span>business@modapkpro.com</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="social-links-card">
+                            <h3>Follow Us</h3>
+                            <div class="social-links">
+                                <a href="https://t.me/modapkpro" target="_blank" class="social-link">
+                                    <i class="fab fa-telegram"></i>Telegram
+                                </a>
+                                <a href="https://discord.gg/modapkpro" target="_blank" class="social-link">
+                                    <i class="fab fa-discord"></i>Discord
+                                </a>
+                                <a href="https://twitter.com/modapkpro" target="_blank" class="social-link">
+                                    <i class="fab fa-twitter"></i>Twitter
+                                </a>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modals -->
+    <!-- Admin Modal -->
+    <div id="adminModal" class="modal hidden">
+        <div class="modal-content modal-content--large">
+            <div class="modal-header">
+                <h2>Administrative Dashboard</h2>
+                <button class="modal-close" id="closeAdmin">&times;</button>
+            </div>
+            
+            <!-- Multi-level Login -->
+            <div id="loginSection" class="admin-section">
+                <div class="login-card">
+                    <h3>Secure Admin Access</h3>
+                    <form id="adminLoginForm" class="login-form">
+                        <div class="form-group">
+                            <label class="form-label">Username:</label>
+                            <input type="text" id="adminUsername" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password:</label>
+                            <input type="password" id="adminPassword" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Security Question: What is your favorite color?</label>
+                            <input type="text" id="securityAnswer" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--lg">
+                            <i class="fas fa-sign-in-alt"></i>Secure Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Dashboard -->
+            <div id="adminDashboard" class="admin-section hidden">
+                <div class="admin-nav">
+                    <button class="admin-nav-item active" data-tab="overview">
+                        <i class="fas fa-tachometer-alt"></i>Overview
+                    </button>
+                    <button class="admin-nav-item" data-tab="apks">
+                        <i class="fas fa-mobile-alt"></i>APK Management
+                    </button>
+                    <button class="admin-nav-item" data-tab="users">
+                        <i class="fas fa-users"></i>Users
+                    </button>
+                    <button class="admin-nav-item" data-tab="ads">
+                        <i class="fas fa-ad"></i>Advertisements
+                    </button>
+                    <button class="admin-nav-item" data-tab="analytics">
+                        <i class="fas fa-chart-bar"></i>Analytics
+                    </button>
+                    <button class="admin-nav-item" data-tab="settings">
+                        <i class="fas fa-cog"></i>Settings
+                    </button>
+                </div>
+
+                <div class="admin-content">
+                    <!-- Overview Tab -->
+                    <div id="overviewTab" class="admin-tab-content active">
+                        <h3>Dashboard Overview</h3>
+                        <div class="admin-stats-grid">
+                            <div class="admin-stat-card">
+                                <i class="fas fa-download"></i>
+                                <div class="stat-info">
+                                    <span class="stat-number" id="adminTotalApks">0</span>
+                                    <span class="stat-label">Total APKs</span>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <i class="fas fa-eye"></i>
+                                <div class="stat-info">
+                                    <span class="stat-number" id="adminTotalDownloads">0</span>
+                                    <span class="stat-label">Total Downloads</span>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <i class="fas fa-users"></i>
+                                <div class="stat-info">
+                                    <span class="stat-number">1,247</span>
+                                    <span class="stat-label">Active Users</span>
+                                </div>
+                            </div>
+                            <div class="admin-stat-card">
+                                <i class="fas fa-dollar-sign"></i>
+                                <div class="stat-info">
+                                    <span class="stat-number">$4,304</span>
+                                    <span class="stat-label">Revenue</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-charts">
+                            <div class="chart-card">
+                                <h4>Downloads Over Time</h4>
+                                <div class="chart-container" style="position: relative; height: 300px;">
+                                    <canvas id="downloadsChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="chart-card">
+                                <h4>Revenue Analytics</h4>
+                                <div class="chart-container" style="position: relative; height: 300px;">
+                                    <canvas id="revenueChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- APK Management Tab -->
+                    <div id="apksTab" class="admin-tab-content">
+                        <div class="tab-header">
+                            <h3>APK Management</h3>
+                            <button class="btn btn--primary" onclick="app.showAddAPKForm()">
+                                <i class="fas fa-plus"></i>Add New APK
+                            </button>
+                        </div>
+                        <div class="admin-table-container">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Version</th>
+                                        <th>Category</th>
+                                        <th>Downloads</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminApkTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Users Tab -->
+                    <div id="usersTab" class="admin-tab-content">
+                        <h3>User Management</h3>
+                        <div class="user-stats">
+                            <div class="user-stat-item">
+                                <span class="stat-number">1,247</span>
+                                <span class="stat-label">Total Users</span>
+                            </div>
+                            <div class="user-stat-item">
+                                <span class="stat-number">156</span>
+                                <span class="stat-label">Online Now</span>
+                            </div>
+                            <div class="user-stat-item">
+                                <span class="stat-number">23</span>
+                                <span class="stat-label">New Today</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ads Tab -->
+                    <div id="adsTab" class="admin-tab-content">
+                        <h3>Advertisement Management</h3>
+                        <div class="ad-network-stats">
+                            <div class="ad-network-card">
+                                <h4>Google AdSense</h4>
+                                <div class="ad-stats">
+                                    <div class="ad-stat">
+                                        <span class="ad-stat-label">Revenue</span>
+                                        <span class="ad-stat-value">$2,847.32</span>
+                                    </div>
+                                    <div class="ad-stat">
+                                        <span class="ad-stat-label">CTR</span>
+                                        <span class="ad-stat-value">2.3%</span>
+                                    </div>
+                                </div>
+                                <span class="status status--success">Active</span>
+                            </div>
+                            <div class="ad-network-card">
+                                <h4>Media.net</h4>
+                                <div class="ad-stats">
+                                    <div class="ad-stat">
+                                        <span class="ad-stat-label">Revenue</span>
+                                        <span class="ad-stat-value">$1,456.78</span>
+                                    </div>
+                                    <div class="ad-stat">
+                                        <span class="ad-stat-label">CTR</span>
+                                        <span class="ad-stat-value">1.8%</span>
+                                    </div>
+                                </div>
+                                <span class="status status--success">Active</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analytics Tab -->
+                    <div id="analyticsTab" class="admin-tab-content">
+                        <h3>Advanced Analytics</h3>
+                        <div class="analytics-overview">
+                            <div class="analytics-card">
+                                <h4>Traffic Sources</h4>
+                                <div class="chart-container" style="position: relative; height: 250px;">
+                                    <canvas id="trafficChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="analytics-card">
+                                <h4>Popular Categories</h4>
+                                <div class="category-stats" id="categoryStats"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Tab -->
+                    <div id="settingsTab" class="admin-tab-content">
+                        <h3>Platform Settings</h3>
+                        <div class="settings-groups">
+                            <div class="settings-group">
+                                <h4>Site Configuration</h4>
+                                <div class="form-group">
+                                    <label class="form-label">Site Name</label>
+                                    <input type="text" class="form-control" value="ModAPK Pro Platform">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Tagline</label>
+                                    <input type="text" class="form-control" value="Your Ultimate Destination for Premium Modified Apps">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APK Details Modal -->
+    <div id="apkModal" class="modal hidden">
+        <div class="modal-content modal-content--apk">
+            <div class="modal-header">
+                <h2 id="apkModalTitle">APK Details</h2>
+                <button class="modal-close" id="closeApkModal">&times;</button>
+            </div>
+            <div id="apkModalContent" class="apk-modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Download Progress Modal -->
+    <div id="downloadModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Download Manager</h2>
+                <button class="modal-close" id="closeDownloadModal">&times;</button>
+            </div>
+            <div class="download-queue" id="downloadQueue"></div>
+        </div>
+    </div>
+
+    <!-- User Account Modal -->
+    <div id="userModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>User Account</h2>
+                <button class="modal-close" id="closeUserModal">&times;</button>
+            </div>
+            <div class="user-content">
+                <div class="user-options">
+                    <button class="btn btn--primary" onclick="app.showUserRegistration()">
+                        <i class="fas fa-user-plus"></i>Register
+                    </button>
+                    <button class="btn btn--outline" onclick="app.showUserLogin()">
+                        <i class="fas fa-sign-in-alt"></i>Login
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="spinner-large"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <!-- Install App Prompt -->
+    <div id="installPrompt" class="install-prompt hidden">
+        <div class="install-content">
+            <i class="fas fa-download"></i>
+            <span>Install ModAPK Pro as an app for better experience</span>
+            <button id="installBtn" class="btn btn--primary btn--sm">Install</button>
+            <button id="dismissInstall" class="btn btn--outline btn--sm">Dismiss</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ModAPK Pro</h3>
+                    <p>Your trusted platform for premium modified Android applications with advanced features and security.</p>
+                    <div class="social-links">
+                        <a href="https://t.me/modapkpro" target="_blank"><i class="fab fa-telegram"></i></a>
+                        <a href="https://discord.gg/modapkpro" target="_blank"><i class="fab fa-discord"></i></a>
+                        <a href="https://twitter.com/modapkpro" target="_blank"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#" onclick="app.navigateTo('browse')">Browse APKs</a></li>
+                        <li><a href="#" onclick="app.navigateTo('upload')">Upload APK</a></li>
+                        <li><a href="#" onclick="app.navigateTo('about')">About Us</a></li>
+                        <li><a href="#" onclick="app.navigateTo('contact')">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Categories</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Games</a></li>
+                        <li><a href="#">Social</a></li>
+                        <li><a href="#">Music</a></li>
+                        <li><a href="#">Photography</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">DMCA Policy</a></li>
+                        <li><a href="#">Guidelines</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2025 ModAPK Pro Platform. All rights reserved.</p>
+                    <div class="footer-bottom-links">
+                        <span>Made with ❤️ for the Android community</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
