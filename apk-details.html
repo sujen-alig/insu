@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="apk-title">APK Details - ModAPK Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand" onclick="window.location.href='index.html'">
+                <i class="fas fa-mobile-alt"></i>
+                <span>ModAPK</span>
+            </div>
+            
+            <div class="nav-menu">
+                <button class="nav-item" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Home</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- APK Details Container -->
+    <div class="apk-details-container">
+        <div class="apk-details-header">
+            <div class="apk-icon-large">
+                <img id="apk-icon" src="" alt="APK Icon">
+            </div>
+            <div class="apk-info">
+                <h1 id="apk-name">Loading...</h1>
+                <div class="apk-meta">
+                    <span class="version" id="apk-version">v0.0.0</span>
+                    <span class="separator">•</span>
+                    <span class="category" id="apk-category">Category</span>
+                    <span class="separator">•</span>
+                    <span class="size" id="apk-size">0 MB</span>
+                </div>
+                <div class="apk-stats">
+                    <div class="stat">
+                        <i class="fas fa-download"></i>
+                        <span id="download-count">0</span> downloads
+                    </div>
+                    <div class="stat">
+                        <div class="rating-display">
+                            <div class="stars" id="rating-stars"></div>
+                            <span id="rating-text">0.0</span>
+                            <span class="review-count">(<span id="review-count">0</span> reviews)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="apk-badges">
+                    <span id="verified-badge" class="badge verified hidden">
+                        <i class="fas fa-check-circle"></i> Verified
+                    </span>
+                    <span id="featured-badge" class="badge featured hidden">
+                        <i class="fas fa-star"></i> Featured
+                    </span>
+                    <span id="trending-badge" class="badge trending hidden">
+                        <i class="fas fa-fire"></i> Trending
+                    </span>
+                </div>
+            </div>
+            <div class="download-section">
+                <button class="btn-download-primary" onclick="startDownload()">
+                    <i class="fas fa-download"></i>
+                    Download APK
+                </button>
+                <div class="download-options">
+                    <button class="btn-download-secondary" onclick="showQRCode()">
+                        <i class="fas fa-qrcode"></i>
+                        Mobile Download
+                    </button>
+                    <button class="btn-download-secondary" onclick="shareAPK()">
+                        <i class="fas fa-share-alt"></i>
+                        Share
+                    </button>
+                </div>
+                
+                <!-- Download Progress -->
+                <div id="download-progress" class="download-progress-container hidden">
+                    <div class="progress-info">
+                        <span>Downloading...</span>
+                        <span id="progress-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="download-actions">
+                        <button class="btn-pause" onclick="pauseDownload()">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button class="btn-cancel" onclick="cancelDownload()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Screenshot Gallery -->
+        <div class="screenshots-section">
+            <h3>Screenshots</h3>
+            <div class="screenshots-gallery" id="screenshots-gallery">
+                <!-- Screenshots will be loaded here -->
+            </div>
+        </div>
+
+        <!-- APK Details Grid -->
+        <div class="details-grid">
+            <div class="details-main">
+                <div class="section description-section">
+                    <h3>Description</h3>
+                    <div class="description-content" id="apk-description">
+                        Loading description...
+                    </div>
+                </div>
+
+                <div class="section features-section">
+                    <h3>Features</h3>
+                    <div class="features-list" id="features-list">
+                        <!-- Features will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="section installation-section">
+                    <h3>Installation Instructions</h3>
+                    <div class="installation-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Enable Unknown Sources</h4>
+                                <p>Go to Settings → Security → Unknown Sources and enable it</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Download APK</h4>
+                                <p>Click the download button above to get the APK file</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Install APK</h4>
+                                <p>Open the downloaded file and follow the installation prompts</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <div class="step-content">
+                                <h4>Enjoy!</h4>
+                                <p>Launch the app and enjoy all the premium features</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section reviews-section">
+                    <h3>User Reviews</h3>
+                    <div class="review-form">
+                        <h4>Write a Review</h4>
+                        <div class="rating-input">
+                            <span>Your Rating:</span>
+                            <div class="star-rating" id="star-rating">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                            </div>
+                        </div>
+                        <textarea id="review-text" placeholder="Share your experience with this app..."></textarea>
+                        <button class="btn-primary" onclick="submitReview()">Submit Review</button>
+                    </div>
+                    
+                    <div class="reviews-list" id="reviews-list">
+                        <!-- Reviews will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="details-sidebar">
+                <div class="section app-info">
+                    <h3>App Information</h3>
+                    <div class="info-list">
+                        <div class="info-item">
+                            <span class="label">Package Name</span>
+                            <span class="value" id="package-name">com.example.app</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Version</span>
+                            <span class="value" id="app-version">1.0.0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Size</span>
+                            <span class="value" id="app-size">25 MB</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Android Version</span>
+                            <span class="value" id="android-version">5.0+</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Last Updated</span>
+                            <span class="value" id="last-updated">Recently</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Downloads</span>
+                            <span class="value" id="total-downloads">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section permissions-section">
+                    <h3>Permissions</h3>
+                    <div class="permissions-list" id="permissions-list">
+                        <!-- Permissions will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="section tags-section">
+                    <h3>Tags</h3>
+                    <div class="tags-list" id="tags-list">
+                        <!-- Tags will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="section related-apks">
+                    <h3>Related APKs</h3>
+                    <div class="related-list" id="related-list">
+                        <!-- Related APKs will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal -->
+    <div id="qr-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Mobile Download</h2>
+                <button class="modal-close" onclick="closeModal('qr-modal')">×</button>
+            </div>
+            <div class="qr-container">
+                <div id="qr-code"></div>
+                <p>Scan this QR code with your mobile device to download</p>
+                <div class="mobile-url">
+                    <input type="text" id="mobile-url" readonly>
+                    <button onclick="copyToClipboard()" class="btn-copy">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="share-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Share APK</h2>
+                <button class="modal-close" onclick="closeModal('share-modal')">×</button>
+            </div>
+            <div class="share-options">
+                <button class="share-btn" onclick="shareToSocial('twitter')">
+                    <i class="fab fa-twitter"></i>
+                    Twitter
+                </button>
+                <button class="share-btn" onclick="shareToSocial('facebook')">
+                    <i class="fab fa-facebook"></i>
+                    Facebook
+                </button>
+                <button class="share-btn" onclick="shareToSocial('whatsapp')">
+                    <i class="fab fa-whatsapp"></i>
+                    WhatsApp
+                </button>
+                <button class="share-btn" onclick="shareToSocial('telegram')">
+                    <i class="fab fa-telegram"></i>
+                    Telegram
+                </button>
+                <div class="share-url">
+                    <input type="text" id="share-url" readonly>
+                    <button onclick="copyShareUrl()" class="btn-copy">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Toast -->
+    <div id="toast" class="toast hidden">
+        <div class="toast-content">
+            <i id="toast-icon" class="fas fa-check-circle"></i>
+            <span id="toast-message">Success!</span>
+        </div>
+    </div>
+
+    <script>
+    class APKDetails {
+        constructor() {
+            // Hardcoded Supabase configuration
+            this.supabaseUrl = 'https://jpzexvamlwxfyhgeuzpc.supabase.co';
+            this.supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpwemV4dmFtbHd4ZnloZ2V1enBjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTYxNDc0NzYsImV4cCI6MjA3MTcyMzQ3Nn0.wBuPkCmrlyqJhq2KsNiS_1Al3CDlFRudOCEIGHkML7E';
+            
+            // Initialize Supabase
+            try {
+                this.supabase = window.supabase?.createClient(this.supabaseUrl, this.supabaseKey);
+            } catch (error) {
+                console.log('Supabase not available, using local data');
+                this.supabase = null;
+            }
+            
+            this.apkId = this.getAPKIdFromURL();
+            this.apkData = null;
+            this.currentRating = 0;
+            this.downloadProgress = 0;
+            this.isDownloading = false;
+            
+            this.init();
+        }
+        
+        getAPKIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id') || '1';
+        }
+        
+        async init() {
+            this.setupEventListeners();
+            await this.loadAPKData();
+            this.renderAPKDetails();
+            this.loadReviews();
+        }
+        
+        setupEventListeners() {
+            // Star rating
+            document.querySelectorAll('#star-rating .fas').forEach((star, index) => {
+                star.addEventListener('click', () => {
+                    this.currentRating = index + 1;
+                    this.updateStarRating();
+                });
+                
+                star.addEventListener('mouseenter', () => {
+                    this.highlightStars(index + 1);
+                });
+            });
+            
+            document.getElementById('star-rating').addEventListener('mouseleave', () => {
+                this.updateStarRating();
+            });
+            
+            // Screenshot gallery
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('screenshot-thumb')) {
+                    this.openScreenshotModal(e.target.src);
+                }
+            });
+        }
+        
+        async loadAPKData() {
+            if (this.supabase) {
+                try {
+                    const { data, error } = await this.supabase
+                        .from('apks')
+                        .select('*')
+                        .eq('id', this.apkId)
+                        .single();
+                    
+                    if (error) throw error;
+                    this.apkData = data;
+                    return;
+                } catch (error) {
+                    console.error('Error loading APK data:', error);
+                }
+            }
+            
+            // Fallback to sample data
+            this.apkData = {
+                id: '1',
+                name: 'WhatsApp Plus',
+                version: '17.60.2',
+                package_name: 'com.whatsapp.plus',
+                category: 'Social',
+                description: 'Enhanced WhatsApp with advanced privacy features, custom themes, extended media sharing, message scheduling, and anti-ban protection. This modified version includes all premium features unlocked.',
+                download_url: 'https://download.apkpure.com/b/XAPK/Y29tLndoYXRzYXBwLnBsdXM',
+                icon_url: 'https://images.sftcdn.net/images/t_app-icon-m/p/f4fbbd96-9b15-11e6-91f5-00163ed833e7/1919082909/whatsapp-messenger-icon.png',
+                screenshot_urls: [
+                    'https://images.apkpure.com/whatsapp/screenshot-1.jpg',
+                    'https://images.apkpure.com/whatsapp/screenshot-2.jpg',
+                    'https://images.apkpure.com/whatsapp/screenshot-3.jpg'
+                ],
+                file_size: '58.7 MB',
+                android_version: '4.4+',
+                download_count: 2847362,
+                rating: 4.8,
+                review_count: 12047,
+                features: ['Custom Themes', 'Privacy Options', 'Anti-Ban Protection', 'Message Scheduling', 'Extended Media Sharing'],
+                tags: ['messaging', 'social', 'themes', 'privacy'],
+                verified: true,
+                featured: true,
+                trending: true,
+                created_at: '2024-01-15',
+                updated_at: '2024-08-25'
+            };
+        }
+        
+        renderAPKDetails() {
+            if (!this.apkData) return;
+            
+            // Update page title
+            document.title = `${this.apkData.name} v${this.apkData.version} - ModAPK Platform`;
+            document.getElementById('apk-title').textContent = document.title;
+            
+            // Update main info
+            document.getElementById('apk-icon').src = this.apkData.icon_url;
+            document.getElementById('apk-icon').alt = this.apkData.name;
+            document.getElementById('apk-name').textContent = this.apkData.name;
+            document.getElementById('apk-version').textContent = `v${this.apkData.version}`;
+            document.getElementById('apk-category').textContent = this.apkData.category;
+            document.getElementById('apk-size').textContent = this.apkData.file_size;
+            document.getElementById('download-count').textContent = this.formatNumber(this.apkData.download_count);
+            
+            // Update rating
+            document.getElementById('rating-text').textContent = this.apkData.rating.toFixed(1);
+            document.getElementById('review-count').textContent = this.formatNumber(this.apkData.review_count);
+            this.renderStars(document.getElementById('rating-stars'), this.apkData.rating);
+            
+            // Update badges
+            if (this.apkData.verified) document.getElementById('verified-badge').classList.remove('hidden');
+            if (this.apkData.featured) document.getElementById('featured-badge').classList.remove('hidden');
+            if (this.apkData.trending) document.getElementById('trending-badge').classList.remove('hidden');
+            
+            // Update description
+            document.getElementById('apk-description').textContent = this.apkData.description;
+            
+            // Update app info sidebar
+            document.getElementById('package-name').textContent = this.apkData.package_name;
+            document.getElementById('app-version').textContent = this.apkData.version;
+            document.getElementById('app-size').textContent = this.apkData.file_size;
+            document.getElementById('android-version').textContent = this.apkData.android_version;
+            document.getElementById('last-updated').textContent = this.formatDate(this.apkData.updated_at);
+            document.getElementById('total-downloads').textContent = this.formatNumber(this.apkData.download_count);
+            
+            // Render features
+            this.renderFeatures();
+            
+            // Render screenshots
+            this.renderScreenshots();
+            
+            // Render tags
+            this.renderTags();
+            
+            // Load related APKs
+            this.loadRelatedAPKs();
+        }
+        
+        renderFeatures() {
+            const featuresContainer = document.getElementById('features-list');
+            if (this.apkData.features && this.apkData.features.length > 0) {
+                featuresContainer.innerHTML = this.apkData.features.map(feature => `
+                    <div class="feature-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span>${feature}</span>
+                    </div>
+                `).join('');
+            } else {
+                featuresContainer.innerHTML = '<p>No specific features listed.</p>';
+            }
+        }
+        
+        renderScreenshots() {
+            const gallery = document.getElementById('screenshots-gallery');
+            if (this.apkData.screenshot_urls && this.apkData.screenshot_urls.length > 0) {
+                gallery.innerHTML = this.apkData.screenshot_urls.map(url => `
+                    <div class="screenshot-item">
+                        <img src="${url}" alt="Screenshot" class="screenshot-thumb">
+                    </div>
+                `).join('');
+            } else {
+                gallery.innerHTML = '<p>No screenshots available.</p>';
+            }
+        }
+        
+        renderTags() {
+            const tagsContainer = document.getElementById('tags-list');
+            if (this.apkData.tags && this.apkData.tags.length > 0) {
+                tagsContainer.innerHTML = this.apkData.tags.map(tag => `
+                    <span class="tag-item">${tag}</span>
+                `).join('');
+            } else {
+                tagsContainer.innerHTML = '<p>No tags available.</p>';
+            }
+        }
+        
+        async loadRelatedAPKs() {
+            // Sample related APKs
+            const relatedAPKs = [
+                { id: '2', name: 'Telegram Plus', icon: 'https://example.com/telegram.png', category: 'Social' },
+                { id: '3', name: 'Instagram Pro', icon: 'https://example.com/instagram.png', category: 'Social' },
+                { id: '4', name: 'Signal Plus', icon: 'https://example.com/signal.png', category: 'Social' }
+            ];
+            
+            const relatedContainer = document.getElementById('related-list');
+            relatedContainer.innerHTML = relatedAPKs.map(apk => `
+                <div class="related-item" onclick="window.location.href='apk-details.html?id=${apk.id}'">
+                    <img src="${apk.icon}" alt="${apk.name}" class="related-icon">
+                    <div class="related-info">
+                        <div class="related-name">${apk.name}</div>
+                        <div class="related-category">${apk.category}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        async loadReviews() {
+            // Sample reviews
+            const reviews = [
+                {
+                    id: '1',
+                    user: 'TechUser123',
+                    rating: 5,
+                    comment: 'Amazing mod! All features work perfectly. Highly recommended!',
+                    date: '2024-08-20'
+                },
+                {
+                    id: '2',
+                    user: 'AppLover',
+                    rating: 4,
+                    comment: 'Great app with lots of customization options. Some minor bugs but overall excellent.',
+                    date: '2024-08-18'
+                }
+            ];
+            
+            const reviewsContainer = document.getElementById('reviews-list');
+            reviewsContainer.innerHTML = reviews.map(review => `
+                <div class="review-item">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <div class="reviewer-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="reviewer-details">
+                                <div class="reviewer-name">${review.user}</div>
+                                <div class="review-date">${this.formatDate(review.date)}</div>
+                            </div>
+                        </div>
+                        <div class="review-rating">
+                            ${this.generateStarRating(review.rating)}
+                        </div>
+                    </div>
+                    <div class="review-content">
+                        ${review.comment}
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        renderStars(container, rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+            
+            let starsHTML = '';
+            for (let i = 0; i < fullStars; i++) {
+                starsHTML += '<i class="fas fa-star"></i>';
+            }
+            if (hasHalfStar) {
+                starsHTML += '<i class="fas fa-star-half-alt"></i>';
+            }
+            for (let i = fullStars + (hasHalfStar ? 1 : 0); i < 5; i++) {
+                starsHTML += '<i class="far fa-star"></i>';
+            }
+            
+            container.innerHTML = starsHTML;
+        }
+        
+        generateStarRating(rating) {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                stars += i <= rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+            }
+            return stars;
+        }
+        
+        updateStarRating() {
+            const stars = document.querySelectorAll('#star-rating .fas');
+            stars.forEach((star, index) => {
+                if (index < this.currentRating) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                    star.style.color = '#ffc107';
+                } else {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                    star.style.color = '#ddd';
+                }
+            });
+        }
+        
+        highlightStars(count) {
+            const stars = document.querySelectorAll('#star-rating .fas, #star-rating .far');
+            stars.forEach((star, index) => {
+                if (index < count) {
+                    star.style.color = '#ffc107';
+                } else {
+                    star.style.color = '#ddd';
+                }
+            });
+        }
+        
+        formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+        
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+        
+        showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toast-icon');
+            const messageEl = document.getElementById('toast-message');
+            
+            messageEl.textContent = message;
+            
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+                toast.style.backgroundColor = '#4CAF50';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle';
+                toast.style.backgroundColor = '#f44336';
+            }
+            
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    }
+    
+    // Global functions
+    function startDownload() {
+        const progressContainer = document.getElementById('download-progress');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-percentage');
+        
+        progressContainer.classList.remove('hidden');
+        apkDetails.isDownloading = true;
+        
+        // Simulate download progress
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 10;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                setTimeout(() => {
+                    progressContainer.classList.add('hidden');
+                    apkDetails.showToast('Download completed successfully!', 'success');
+                    
+                    // Track download
+                    if (apkDetails.supabase) {
+                        apkDetails.trackDownload();
+                    }
+                }, 1000);
+            }
+            
+            progressFill.style.width = progress + '%';
+            progressText.textContent = Math.round(progress) + '%';
+        }, 500);
+    }
+    
+    function pauseDownload() {
+        apkDetails.showToast('Download paused', 'info');
+    }
+    
+    function cancelDownload() {
+        document.getElementById('download-progress').classList.add('hidden');
+        apkDetails.showToast('Download cancelled', 'error');
+        apkDetails.isDownloading = false;
+    }
+    
+    function showQRCode() {
+        const modal = document.getElementById('qr-modal');
+        const qrContainer = document.getElementById('qr-code');
+        const mobileUrl = document.getElementById('mobile-url');
+        
+        const url = window.location.href;
+        mobileUrl.value = url;
+        
+        // Generate QR code
+        qrContainer.innerHTML = '';
+        QRCode.toCanvas(qrContainer, url, (error) => {
+            if (error) console.error(error);
+        });
+        
+        modal.style.display = 'flex';
+    }
+    
+    function shareAPK() {
+        const modal = document.getElementById('share-modal');
+        const shareUrl = document.getElementById('share-url');
+        
+        shareUrl.value = window.location.href;
+        modal.style.display = 'flex';
+    }
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    
+    function copyToClipboard() {
+        const input = document.getElementById('mobile-url');
+        input.select();
+        document.execCommand('copy');
+        apkDetails.showToast('URL copied to clipboard!', 'success');
+    }
+    
+    function copyShareUrl() {
+        const input = document.getElementById('share-url');
+        input.select();
+        document.execCommand('copy');
+        apkDetails.showToast('URL copied to clipboard!', 'success');
+    }
+    
+    function shareToSocial(platform) {
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent(`Check out ${apkDetails.apkData.name} - ${apkDetails.apkData.description.substring(0, 100)}...`);
+        
+        let shareUrl = '';
+        switch (platform) {
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+                break;
+            case 'facebook':
+                shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                break;
+            case 'whatsapp':
+                shareUrl = `https://wa.me/?text=${text}%20${url}`;
+                break;
+            case 'telegram':
+                shareUrl = `https://t.me/share/url?url=${url}&text=${text}`;
+                break;
+        }
+        
+        if (shareUrl) {
+            window.open(shareUrl, '_blank', 'width=600,height=400');
+        }
+    }
+    
+    async function submitReview() {
+        if (apkDetails.currentRating === 0) {
+            apkDetails.showToast('Please select a rating', 'error');
+            return;
+        }
+        
+        const reviewText = document.getElementById('review-text').value.trim();
+        if (!reviewText) {
+            apkDetails.showToast('Please write a review', 'error');
+            return;
+        }
+        
+        // In a real app, submit to database
+        apkDetails.showToast('Review submitted successfully!', 'success');
+        
+        // Clear form
+        document.getElementById('review-text').value = '';
+        apkDetails.currentRating = 0;
+        apkDetails.updateStarRating();
+        
+        // Reload reviews
+        setTimeout(() => {
+            apkDetails.loadReviews();
+        }, 1000);
+    }
+    
+    // Initialize
+    let apkDetails;
+    document.addEventListener('DOMContentLoaded', () => {
+        apkDetails = new APKDetails();
+    });
+    </script>
+
+    <style>
+    /* APK Details Specific Styles */
+    .apk-details-container {
+        max-width: 1200px;
+        margin: 80px auto 0;
+        padding: 24px;
+    }
+    
+    .apk-details-header {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 24px;
+        align-items: start;
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-bottom: 32px;
+    }
+    
+    .apk-icon-large img {
+        width: 120px;
+        height: 120px;
+        border-radius: 20px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+    
+    .apk-info h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0 0 8px 0;
+        color: #2c3e50;
+    }
+    
+    .apk-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        font-size: 16px;
+        color: #6c757d;
+    }
+    
+    .separator {
+        color: #dee2e6;
+    }
+    
+    .apk-stats {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 16px;
+    }
+    
+    .stat {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #6c757d;
+    }
+    
+    .rating-display {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .stars {
+        color: #ffc107;
+        font-size: 16px;
+    }
+    
+    .review-count {
+        color: #6c757d;
+        font-size: 14px;
+    }
+    
+    .apk-badges {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+    
+    .badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    
+    .badge.verified {
+        background: #d4edda;
+        color: #155724;
+    }
+    
+    .badge.featured {
+        background: #fff3cd;
+        color: #856404;
+    }
+    
+    .badge.trending {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    
+    .download-section {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 250px;
+    }
+    
+    .btn-download-primary {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: all 0.2s;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-download-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+    
+    .download-options {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .btn-download-secondary {
+        flex: 1;
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        color: #6c757d;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition: all 0.2s;
+    }
+    
+    .btn-download-secondary:hover {
+        background: #e9ecef;
+        color: #495057;
+    }
+    
+    .download-progress-container {
+        background: #f8f9fa;
+        padding: 16px;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+    }
+    
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .progress-bar {
+        height: 8px;
+        background: #e9ecef;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 12px;
+    }
+    
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #28a745, #20c997);
+        width: 0%;
+        transition: width 0.3s;
+    }
+    
+    .download-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+    
+    .btn-pause, .btn-cancel {
+        background: none;
+        border: 2px solid #6c757d;
+        color: #6c757d;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        transition: all 0.2s;
+    }
+    
+    .btn-pause:hover {
+        background: #6c757d;
+        color: white;
+    }
+    
+    .btn-cancel:hover {
+        border-color: #dc3545;
+        background: #dc3545;
+        color: white;
+    }
+    
+    .screenshots-section {
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-bottom: 32px;
+    }
+    
+    .screenshots-section h3 {
+        margin: 0 0 20px 0;
+        font-size: 24px;
+        color: #2c3e50;
+    }
+    
+    .screenshots-gallery {
+        display: flex;
+        gap: 16px;
+        overflow-x: auto;
+        padding: 8px 0;
+    }
+    
+    .screenshot-item {
+        flex: 0 0 auto;
+    }
+    
+    .screenshot-thumb {
+        width: 200px;
+        height: 360px;
+        object-fit: cover;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.2s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .screenshot-thumb:hover {
+        transform: scale(1.05);
+    }
+    
+    .details-grid {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 32px;
+    }
+    
+    .section {
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        margin-bottom: 32px;
+    }
+    
+    .section h3 {
+        margin: 0 0 20px 0;
+        font-size: 24px;
+        color: #2c3e50;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    
+    .description-content {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #495057;
+    }
+    
+    .features-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #28a745;
+    }
+    
+    .feature-item i {
+        color: #28a745;
+        font-size: 16px;
+    }
+    
+    .installation-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .step {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #1FB8CD, #159ba8);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 18px;
+        flex-shrink: 0;
+    }
+    
+    .step-content h4 {
+        margin: 0 0 8px 0;
+        color: #2c3e50;
+        font-size: 18px;
+    }
+    
+    .step-content p {
+        margin: 0;
+        color: #6c757d;
+        line-height: 1.5;
+    }
+    
+    .review-form {
+        background: #f8f9fa;
+        padding: 24px;
+        border-radius: 12px;
+        margin-bottom: 32px;
+    }
+    
+    .review-form h4 {
+        margin: 0 0 16px 0;
+        color: #2c3e50;
+    }
+    
+    .rating-input {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .star-rating {
+        display: flex;
+        gap: 4px;
+    }
+    
+    .star-rating i {
+        font-size: 20px;
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    
+    .star-rating i:hover {
+        color: #ffc107;
+    }
+    
+    .review-form textarea {
+        width: 100%;
+        min-height: 100px;
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        resize: vertical;
+        font-family: inherit;
+        margin-bottom: 16px;
+    }
+    
+    .review-form textarea:focus {
+        outline: none;
+        border-color: #1FB8CD;
+    }
+    
+    .reviews-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .review-item {
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        border-left: 4px solid #1FB8CD;
+    }
+    
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+    
+    .reviewer-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .reviewer-avatar {
+        width: 40px;
+        height: 40px;
+        background: #6c757d;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .reviewer-name {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    
+    .review-date {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    
+    .review-rating {
+        color: #ffc107;
+        font-size: 16px;
+    }
+    
+    .review-content {
+        color: #495057;
+        line-height: 1.5;
+    }
+    
+    .app-info .info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f8f9fa;
+    }
+    
+    .info-item:last-child {
+        border-bottom: none;
+    }
+    
+    .info-item .label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+    
+    .info-item .value {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    
+    .permissions-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .permission-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+    
+    .permission-item i {
+        color: #6c757d;
+        width: 16px;
+    }
+    
+    .tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .tag-item {
+        background: #e3f2fd;
+        color: #1976d2;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    
+    .related-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .related-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .related-item:hover {
+        background: #e9ecef;
+        transform: translateX(4px);
+    }
+    
+    .related-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+    
+    .related-name {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 2px;
+    }
+    
+    .related-category {
+        font-size: 12px;
+        color: #6c757d;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 10000;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    
+    .modal-content {
+        background: white;
+        border-radius: 16px;
+        width: 100%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 24px;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    
+    .modal-header h2 {
+        margin: 0;
+        color: #2c3e50;
+    }
+    
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #6c757d;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s;
+    }
+    
+    .modal-close:hover {
+        background: #f8f9fa;
+        color: #2c3e50;
+    }
+    
+    .qr-container {
+        padding: 24px;
+        text-align: center;
+    }
+    
+    .qr-container canvas {
+        margin-bottom: 16px;
+        border-radius: 8px;
+    }
+    
+    .qr-container p {
+        margin: 0 0 16px 0;
+        color: #6c757d;
+    }
+    
+    .mobile-url {
+        display: flex;
+        gap: 8px;
+    }
+    
+    .mobile-url input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        font-size: 14px;
+        background: #f8f9fa;
+    }
+    
+    .btn-copy {
+        background: #1FB8CD;
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-copy:hover {
+        background: #159ba8;
+    }
+    
+    .share-options {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .share-btn {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        border: 2px solid #e9ecef;
+        background: white;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 16px;
+    }
+    
+    .share-btn:hover {
+        background: #f8f9fa;
+        transform: translateY(-1px);
+    }
+    
+    .share-url {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+    }
+    
+    .share-url input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        font-size: 14px;
+        background: #f8f9fa;
+    }
+    
+    .toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10001;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        animation: slideIn 0.3s ease;
+    }
+    
+    .toast.hidden {
+        display: none;
+    }
+    
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .apk-details-container {
+            padding: 16px;
+            margin-top: 70px;
+        }
+        
+        .apk-details-header {
+            grid-template-columns: auto 1fr;
+            gap: 16px;
+            padding: 20px;
+        }
+        
+        .download-section {
+            grid-column: 1 / -1;
+            margin-top: 20px;
+        }
+        
+        .details-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .section {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .screenshots-gallery {
+            gap: 12px;
+        }
+        
+        .screenshot-thumb {
+            width: 150px;
+            height: 270px;
+        }
+        
+        .apk-icon-large img {
+            width: 80px;
+            height: 80px;
+        }
+        
+        .apk-info h1 {
+            font-size: 24px;
+        }
+        
+        .btn-download-primary {
+            font-size: 16px;
+            padding: 14px 20px;
+        }
+        
+        .download-options {
+            flex-direction: column;
+        }
+    }
+    </style>
+</body>
+</html>
