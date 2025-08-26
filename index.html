@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModAPK - Premium Modded Apps</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="theme-color" content="#1FB8CD">
+    <meta name="description" content="Download premium modded APKs with enhanced features">
+</head>
+<body>
+    <!-- Top Ad Banner -->
+    <div id="top-ad-banner" class="ad-banner top-ad" style="display: none;">
+        <div class="ad-content">
+            <span class="ad-text">Advertisement</span>
+            <button class="ad-close" onclick="closeAd('top-ad-banner')">×</button>
+            <div class="ad-body"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-mobile-alt"></i>
+                <span>ModAPK</span>
+            </div>
+            
+            <div class="nav-search">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Search APKs..." class="search-input">
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <button class="nav-item active" onclick="showView('home')">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </button>
+                <button class="nav-item" onclick="showView('categories')">
+                    <i class="fas fa-th-large"></i>
+                    <span>Categories</span>
+                </button>
+                <button class="nav-item" onclick="showView('trending')">
+                    <i class="fas fa-fire"></i>
+                    <span>Trending</span>
+                </button>
+                <button class="nav-item" id="admin-btn" onclick="openAdmin()" style="display: none;">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                </button>
+                <button class="nav-item" id="login-btn" onclick="showLogin()">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </button>
+                <div class="nav-item user-menu" id="user-menu" style="display: none;">
+                    <i class="fas fa-user"></i>
+                    <span id="user-name">User</span>
+                    <div class="user-dropdown">
+                        <button onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Loading Screen -->
+        <div id="loading-screen" class="loading-screen">
+            <div class="loader">
+                <div class="spinner"></div>
+                <h3>Loading ModAPK Platform</h3>
+                <p>Connecting to database...</p>
+            </div>
+        </div>
+
+        <!-- Home View -->
+        <div id="home-view" class="view active">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Premium Modded Apps</h1>
+                    <p>Discover and download the latest modded APKs with enhanced features</p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number" id="total-apks">0</span>
+                            <span class="stat-label">Apps Available</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="total-downloads">0</span>
+                            <span class="stat-label">Downloads</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number" id="avg-rating">0</span>
+                            <span class="stat-label">Avg Rating</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured APKs -->
+            <section class="featured-section">
+                <div class="container">
+                    <h2>Featured Apps</h2>
+                    <div class="apks-grid" id="featured-apks">
+                        <!-- APKs will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Middle Ad Banner -->
+            <div id="middle-ad-banner" class="ad-banner middle-ad" style="display: none;">
+                <div class="ad-content">
+                    <span class="ad-text">Advertisement</span>
+                    <div class="ad-body"></div>
+                </div>
+            </div>
+
+            <!-- Latest APKs -->
+            <section class="latest-section">
+                <div class="container">
+                    <h2>Latest Apps</h2>
+                    <div class="apks-grid" id="latest-apks">
+                        <!-- APKs will be loaded here -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Categories View -->
+        <div id="categories-view" class="view">
+            <div class="container">
+                <h1>Categories</h1>
+                <div class="categories-grid" id="categories-grid">
+                    <!-- Categories will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending View -->
+        <div id="trending-view" class="view">
+            <div class="container">
+                <h1>Trending Apps</h1>
+                <div class="apks-grid" id="trending-apks">
+                    <!-- Trending APKs will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results View -->
+        <div id="search-view" class="view">
+            <div class="container">
+                <h1>Search Results</h1>
+                <div class="apks-grid" id="search-results">
+                    <!-- Search results will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- APK Details Modal -->
+    <div id="apk-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close-modal" onclick="closeModal('apk-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="apk-details">
+                    <div class="apk-icon">
+                        <img id="modal-apk-icon" src="" alt="APK Icon">
+                    </div>
+                    <div class="apk-info">
+                        <h2 id="modal-apk-name">APK Name</h2>
+                        <p id="modal-apk-category">Category</p>
+                        <div class="apk-meta">
+                            <span id="modal-apk-version">v1.0</span>
+                            <span>•</span>
+                            <span id="modal-apk-size">0 MB</span>
+                            <span>•</span>
+                            <span id="modal-apk-android">Android 5.0+</span>
+                        </div>
+                        <div class="apk-rating">
+                            <div class="stars" id="modal-apk-stars"></div>
+                            <span id="modal-apk-rating">0.0</span>
+                            <span>(<span id="modal-apk-reviews">0</span> reviews)</span>
+                        </div>
+                        <button class="download-btn" id="modal-download-btn" onclick="downloadAPK()">
+                            <i class="fas fa-download"></i>
+                            Download APK
+                        </button>
+                        <p id="modal-apk-description">Description will be loaded here...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Login to ModAPK</h3>
+                <button class="close-modal" onclick="closeModal('login-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="login-form">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+                <p class="form-footer">
+                    Don't have an account? 
+                    <a href="#" onclick="showSignup()">Sign up here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signup-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Sign Up to ModAPK</h3>
+                <button class="close-modal" onclick="closeModal('signup-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="signup-form">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" name="password" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" name="username" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </form>
+                <p class="form-footer">
+                    Already have an account? 
+                    <a href="#" onclick="showLogin()">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Ad Banner -->
+    <div id="bottom-ad-banner" class="ad-banner bottom-ad" style="display: none;">
+        <div class="ad-content">
+            <span class="ad-text">Advertisement</span>
+            <button class="ad-close" onclick="closeAd('bottom-ad-banner')">×</button>
+            <div class="ad-body"></div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button (Mobile) -->
+    <div class="fab" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
