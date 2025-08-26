@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModAPK Platform - Premium Modded Apps</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <meta name="theme-color" content="#1FB8CD">
+    <meta name="description" content="Download premium modded APKs with enhanced features">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand" onclick="platform.showView('main')">
+                <i class="fas fa-mobile-alt"></i>
+                <span>ModAPK</span>
+            </div>
+            
+            <div class="nav-search">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="search-input" placeholder="Search APKs..." class="search-input">
+                </div>
+            </div>
+            
+            <div class="nav-menu">
+                <button class="nav-item active" data-view="main">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </button>
+                <button class="nav-item" data-view="categories">
+                    <i class="fas fa-th-large"></i>
+                    <span>Categories</span>
+                </button>
+                <button class="nav-item" data-view="trending">
+                    <i class="fas fa-fire"></i>
+                    <span>Trending</span>
+                </button>
+                <button class="nav-item" id="admin-btn" onclick="window.open('admin.html', '_blank')" style="display: none;">
+                    <i class="fas fa-cog"></i>
+                    <span>Admin</span>
+                </button>
+                <button class="nav-item" id="login-btn" style="display: flex;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Login</span>
+                </button>
+                <button class="nav-item" id="signup-btn" style="display: flex;">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Sign Up</span>
+                </button>
+                <div class="nav-item" id="user-menu" style="display: none;">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-info">
+                        <span id="user-name">User</span>
+                        <div class="user-dropdown">
+                            <button onclick="platform.showProfile()">
+                                <i class="fas fa-user"></i> Profile
+                            </button>
+                            <button onclick="platform.showFavorites()">
+                                <i class="fas fa-heart"></i> Favorites
+                            </button>
+                            <button id="logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loader">
+            <i class="fas fa-mobile-alt"></i>
+            <h3>Loading ModAPK Platform</h3>
+            <p>Connecting to database...</p>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- Error Screen -->
+    <div id="error-screen" class="error-screen" style="display: none;">
+        <div class="error-content">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h3>Connection Failed</h3>
+            <p id="error-message">Failed to connect to the database. Please check your internet connection and try again.</p>
+            <button onclick="location.reload()" class="btn btn--primary">
+                <i class="fas fa-refresh"></i>
+                Retry
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-content" style="display: none;">
+        
+        <!-- Home View -->
+        <div class="view active" data-view="main">
+            <!-- Hero Section -->
+            <section class="hero">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>Premium Modded Apps</h1>
+                        <p>Discover and download the latest modded APKs with enhanced features and premium unlocks</p>
+                        <div class="hero-stats">
+                            <div class="stat">
+                                <span class="stat-number" id="hero-total-apks">0</span>
+                                <span class="stat-label">Apps Available</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number" id="hero-total-downloads">0</span>
+                                <span class="stat-label">Total Downloads</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number" id="hero-avg-rating">0</span>
+                                <span class="stat-label">Average Rating</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="floating-apps">
+                            <div class="floating-app app-1"><i class="fab fa-android"></i></div>
+                            <div class="floating-app app-2"><i class="fas fa-mobile-alt"></i></div>
+                            <div class="floating-app app-3"><i class="fas fa-download"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Categories -->
+            <section class="quick-categories">
+                <div class="container">
+                    <h2>Browse by Category</h2>
+                    <div class="categories-scroll" id="quick-categories">
+                        <div class="loading-placeholder">Loading categories...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured APKs -->
+            <section class="featured-section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Featured Apps</h2>
+                        <button class="view-all-btn" data-view="featured">View All</button>
+                    </div>
+                    <div class="apks-grid" id="featured-apks">
+                        <div class="loading-placeholder">Loading featured apps...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Latest APKs -->
+            <section class="latest-section">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>Latest Additions</h2>
+                        <div class="filter-buttons">
+                            <button class="filter-btn active" data-filter="all">All</button>
+                            <button class="filter-btn" data-filter="Social">Social</button>
+                            <button class="filter-btn" data-filter="Games">Games</button>
+                            <button class="filter-btn" data-filter="Music">Music</button>
+                            <button class="filter-btn" data-filter="Tools">Tools</button>
+                        </div>
+                    </div>
+                    <div class="apks-grid" id="latest-apks">
+                        <div class="loading-placeholder">Loading latest apps...</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Categories View -->
+        <div class="view" data-view="categories">
+            <div class="container">
+                <div class="page-header">
+                    <h1>All Categories</h1>
+                    <p>Explore apps by category</p>
+                </div>
+                <div class="categories-grid" id="all-categories">
+                    <div class="loading-placeholder">Loading categories...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trending View -->
+        <div class="view" data-view="trending">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Trending Now</h1>
+                    <p>Most popular apps this week</p>
+                </div>
+                <div class="apks-grid" id="trending-apks">
+                    <div class="loading-placeholder">Loading trending apps...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Results View -->
+        <div class="view" data-view="search">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Search Results</h1>
+                    <p id="search-results-text">Search results will appear here</p>
+                </div>
+                <div class="apks-grid" id="search-results">
+                    <div class="empty-state">
+                        <i class="fas fa-search"></i>
+                        <h3>Start Searching</h3>
+                        <p>Type in the search box above to find apps</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Filter View -->
+        <div class="view" data-view="category-filter">
+            <div class="container">
+                <div class="page-header">
+                    <h1 id="category-filter-title">Category Apps</h1>
+                    <p id="category-filter-subtitle">Apps in this category</p>
+                </div>
+                <div class="filter-options">
+                    <div class="sort-options">
+                        <label>Sort by:</label>
+                        <select id="sort-select">
+                            <option value="latest">Latest</option>
+                            <option value="popular">Most Popular</option>
+                            <option value="rating">Highest Rated</option>
+                            <option value="name">Name A-Z</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="apks-grid" id="category-filtered-apks">
+                    <div class="loading-placeholder">Loading apps...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APK Details Modal -->
+    <div id="apk-modal" class="modal">
+        <div class="modal-content apk-modal-content">
+            <div class="modal-header">
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="apk-modal-body">
+                <div class="apk-header">
+                    <div class="apk-icon">
+                        <img id="modal-apk-icon" src="" alt="App Icon">
+                    </div>
+                    <div class="apk-info">
+                        <h2 id="modal-apk-name">App Name</h2>
+                        <p id="modal-apk-category">Category</p>
+                        <div class="apk-meta">
+                            <span id="modal-apk-version">v1.0</span>
+                            <span class="separator">•</span>
+                            <span id="modal-apk-size">0 MB</span>
+                            <span class="separator">•</span>
+                            <span id="modal-apk-android">Android 5.0+</span>
+                        </div>
+                        <div class="apk-rating">
+                            <div class="stars" id="modal-apk-stars"></div>
+                            <span id="modal-apk-rating">0.0</span>
+                            <span class="review-count">(<span id="modal-apk-reviews">0</span> reviews)</span>
+                        </div>
+                    </div>
+                    <div class="download-section">
+                        <button class="download-btn" id="modal-download-btn">
+                            <i class="fas fa-download"></i>
+                            Download
+                        </button>
+                        <div class="download-count">
+                            <i class="fas fa-download"></i>
+                            <span id="modal-download-count">0</span> downloads
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="apk-details">
+                    <div class="apk-description">
+                        <h3>Description</h3>
+                        <p id="modal-apk-description">Loading description...</p>
+                    </div>
+                    
+                    <div class="apk-features" id="modal-apk-features-section" style="display: none;">
+                        <h3>Features</h3>
+                        <ul id="modal-apk-features"></ul>
+                    </div>
+                    
+                    <div class="apk-screenshots" id="modal-apk-screenshots-section" style="display: none;">
+                        <h3>Screenshots</h3>
+                        <div class="screenshots-container" id="modal-apk-screenshots"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Real Data JavaScript - NO DEMO -->
+    <script src="app-real.js"></script>
+
+    <style>
+    /* Additional styles for loading and error states */
+    .loading-screen, .error-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+    
+    .loader, .error-content {
+        text-align: center;
+        color: white;
+        padding: 40px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        max-width: 400px;
+        margin: 20px;
+    }
+    
+    .loader i, .error-content i {
+        font-size: 64px;
+        margin-bottom: 20px;
+        color: #1FB8CD;
+    }
+    
+    .loader h3, .error-content h3 {
+        margin: 0 0 10px 0;
+        font-size: 24px;
+    }
+    
+    .loader p, .error-content p {
+        margin: 0 0 20px 0;
+        opacity: 0.8;
+    }
+    
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-left: 4px solid #1FB8CD;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 20px auto 0;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .loading-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        color: #6c757d;
+        font-size: 16px;
+        border: 2px dashed #dee2e6;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+    
+    .empty-state h3 {
+        margin: 0 0 10px 0;
+        font-size: 24px;
+    }
+    
+    .empty-state p {
+        margin: 0;
+        font-size: 16px;
+        opacity: 0.8;
+    }
+    
+    .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 100px 20px 80px;
+        margin-top: 70px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+    }
+    
+    .hero h1 {
+        font-size: 48px;
+        font-weight: 700;
+        margin: 0 0 20px 0;
+    }
+    
+    .hero p {
+        font-size: 20px;
+        opacity: 0.9;
+        margin: 0 0 40px 0;
+        line-height: 1.6;
+    }
+    
+    .hero-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+    }
+    
+    .hero-stats .stat {
+        text-align: center;
+    }
+    
+    .hero-stats .stat-number {
+        display: block;
+        font-size: 32px;
+        font-weight: 700;
+        color: #1FB8CD;
+    }
+    
+    .hero-stats .stat-label {
+        font-size: 14px;
+        opacity: 0.8;
+    }
+    
+    .floating-apps {
+        position: relative;
+        height: 400px;
+    }
+    
+    .floating-app {
+        position: absolute;
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        color: #1FB8CD;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .floating-app.app-1 {
+        top: 50px;
+        left: 50px;
+        animation-delay: 0s;
+    }
+    
+    .floating-app.app-2 {
+        top: 150px;
+        right: 80px;
+        animation-delay: 2s;
+    }
+    
+    .floating-app.app-3 {
+        bottom: 80px;
+        left: 100px;
+        animation-delay: 4s;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    .quick-categories {
+        padding: 80px 20px;
+        background: #f8f9fa;
+    }
+    
+    .categories-scroll {
+        display: flex;
+        gap: 20px;
+        overflow-x: auto;
+        padding: 20px 0;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    
+    .categories-scroll::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    
+    .section-header h2 {
+        font-size: 32px;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .view-all-btn {
+        background: none;
+        border: 2px solid #1FB8CD;
+        color: #1FB8CD;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+    
+    .view-all-btn:hover {
+        background: #1FB8CD;
+        color: white;
+    }
+    
+    .filter-buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .filter-btn {
+        background: none;
+        border: 2px solid #dee2e6;
+        color: #6c757d;
+        padding: 8px 16px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 14px;
+    }
+    
+    .filter-btn.active,
+    .filter-btn:hover {
+        border-color: #1FB8CD;
+        background: #1FB8CD;
+        color: white;
+    }
+    
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .toast {
+        background: #2c3e50;
+        color: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: slideInRight 0.3s ease;
+        min-width: 300px;
+        position: relative;
+    }
+    
+    .toast--success {
+        background: #4CAF50;
+    }
+    
+    .toast--error {
+        background: #f44336;
+    }
+    
+    .toast--warning {
+        background: #ff9800;
+    }
+    
+    .toast--info {
+        background: #2196F3;
+    }
+    
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .hero-content {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 36px;
+        }
+        
+        .hero p {
+            font-size: 18px;
+        }
+        
+        .hero-stats {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .floating-apps {
+            height: 200px;
+        }
+        
+        .floating-app {
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+        }
+        
+        .section-header {
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .filter-buttons {
+            overflow-x: auto;
+            width: 100%;
+        }
+        
+        .nav-container {
+            padding: 0 16px;
+        }
+        
+        .nav-search {
+            display: none;
+        }
+        
+        .nav-menu {
+            gap: 4px;
+        }
+        
+        .nav-item span {
+            display: none;
+        }
+    }
+    </style>
+</body>
+</html>
